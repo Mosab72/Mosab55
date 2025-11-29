@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="نظام تحليل شامل لـ 445 عقد أكاديمي - تحليل متقدم للجامعات والتخصصات">
+    <title>نظام تحليل العقود الأكاديمية - 445 عقد</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- الرأس -->
+        <header class="header">
+            <h1>📊 نظام تحليل العقود الأكاديمية</h1>
+            <p>تحليل شامل لـ 445 عقد أكاديمي قيد الإجراء</p>
+        </header>
+
+        <!-- لوحة الإحصائيات الرئيسية -->
+        <div class="stats-dashboard">
+            <div class="stat-card total">
+                <h3>إجمالي العقود</h3>
+                <div class="number">445</div>
+            </div>
+            <div class="stat-card ended">
+                <h3>منتهية/قريبة من الانتهاء</h3>
+                <div class="number" id="endedCount">0</div>
+            </div>
+            <div class="stat-card ending-soon">
+                <h3>تنتهي في 2025</h3>
+                <div class="number" id="ending2025">0</div>
+            </div>
+            <div class="stat-card active">
+                <h3>تنتهي في 2026</h3>
+                <div class="number" id="ending2026">0</div>
+            </div>
+        </div>
+
+        <!-- التبويبات الرئيسية -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="overview">📈 نظرة عامة</button>
+                <button class="tab-button" data-tab="contracts">📋 جميع العقود</button>
+                <button class="tab-button" data-tab="dates">📅 تصفح حسب التاريخ</button>
+                <button class="tab-button" data-tab="expiry">⏰ تصنيف حسب الانتهاء</button>
+                <button class="tab-button" data-tab="universities">🏛️ الجامعات</button>
+                <button class="tab-button" data-tab="departments">🏢 الإدارات</button>
+                <button class="tab-button" data-tab="specializations">🎓 التخصصات</button>
+            </div>
+
+            <!-- محتوى التبويب: نظرة عامة -->
+            <div id="overview" class="tab-content active">
+                <h2 style="color: var(--primary-color); margin-bottom: 20px;">📊 نظرة عامة شاملة</h2>
+                
+                <!-- توزيع العقود حسب الدرجة العلمية -->
+                <div class="chart-container">
+                    <h3>📚 توزيع العقود حسب الدرجة العلمية</h3>
+                    <div id="degreeChart"></div>
+                </div>
+
+                <!-- توزيع العقود حسب حالة التقدم -->
+                <div class="chart-container">
+                    <h3>⚙️ حالة التقدم في العقود</h3>
+                    <div id="progressChart"></div>
+                </div>
+
+                <!-- أهم الإحصائيات -->
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>🏛️ عدد الجامعات</h3>
+                        <p class="highlight" id="universitiesCount">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>🏢 عدد الإدارات المختصة</h3>
+                        <p class="highlight">5 إدارات</p>
+                    </div>
+                    <div class="card">
+                        <h3>🎓 التخصصات المختلفة</h3>
+                        <p class="highlight" id="specializations Count">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>📅 متوسط مدة العقد</h3>
+                        <p class="highlight">~1-2 سنة</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- محتوى التبويب: جميع العقود -->
+            <div id="contracts" class="tab-content">
+                <h2 style="color: var(--primary-color); margin-bottom: 20px;">📋 جميع العقود (445 عقد)</h2>
+                
+                <!-- البحث والتصفية -->
+                <div class="search-section">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="🔍 ابحث عن عقد، جامعة، تخصص...">
+                        <select id="filterDegree">
+                            <option value="">كل الدرجات العلمية</option>
+                            <option value="بكالوريوس">بكالوريوس</option>
+                            <option value="ماجستير">ماجستير</option>
+                            <option value="دكتوراه">دكتوراه</option>
+                            <option value="دبلوم">دبلوم</option>
+                        </select>
+                        <select id="filterStatus">
+                            <option value="">كل الحالات</option>
+                            <option value="تم التسليم">تم التسليم</option>
+                            <option value="تم التسليم متأخر">تم التسليم متأخر</option>
+                            <option value="لم يتم التسليم">لم يتم التسليم</option>
+                        </select>
+                        <button onclick="applyFilters()">تطبيق</button>
+                    </div>
+                </div>
+
+                <!-- جدول العقود -->
+                <div class="table-container">
+                    <table id="contractsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الجامعة / الكلية</th>
+                                <th>التخصص</th>
+                                <th>الدرجة العلمية</th>
+                                <th>حالة العقد</th>
+                                <th>بداية العقد</th>
+                                <th>انتهاء العقد</th>
+                                <th>نسبة الإنجاز</th>
+                                <th>الإدارة المختصة</th>
+                                <th>تفاصيل</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contractsBody">
+                            <!-- سيتم ملؤه بواسطة JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- التنقل بين الصفحات -->
+                <div class="pagination" id="pagination"></div>
+            </div>
+
+            <!-- محتوى التبويب: تصفح حسب التاريخ -->
+            <div id="dates" class="tab-content">
+                <h2 style="color: var(--primary-color); margin-bottom: 20px;">📅 تصفح العقود حسب التاريخ</h2>
+                
+                <div class="search-section">
+                    <div class="search-box">
+                        <input type="date" id="dateSearch" placeholder="اختر تاريخاً">
+                        <button onclick="searchByDate()">بحث</button>
+                        <button onclick="showAllDates()">عرض الكل</button>
+                    </div>
+                </div>
+
+                <div id="dateResults" class="cards-grid">
+                    <!-- سيتم ملؤه بواسطة JavaScript -->
+                </div>
+            </div>
+
+            <!-- محتوى التبويب: تصنيف حسب الانتهاء -->
+            <div id="expiry" class="tab-content">
+                <h2 style="color: var(--primary-color); margin-bottom: 20px;">⏰ تصنيف العقود حسب تاريخ الانتهاء</h2>
+
+                <!-- منتهية أو قريبة من الانتهاء (قبل نهاية 2024) -->
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory('expired')">
+                        <h2>🔴 منتهية أو قريبة من الانتهاء (قبل نهاية 2024)</h2>
+                        <span class="count" id="expiredCount">0</span>
+                    </div>
+                    <div id="expiredContent" class="category-content" style="display: none;">
+                        <div id="expiredList" class="cards-grid"></div>
+                    </div>
+                </div>
+
+                <!-- تنتهي في النصف الأول من 2025 -->
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory('firstHalf2025')">
+                        <h2>🟠 تنتهي في النصف الأول من 2025 (يناير - يونيو)</h2>
+                        <span class="count" id="firstHalf2025Count">0</span>
+                    </div>
+                    <div id="firstHalf2025Content" class="category-content" style="display: none;">
+                        <div id="firstHalf2025List" class="cards-grid"></div>
+                    </div>
+                </div>
+
+                <!-- تنتهي في النصف الثاني من 2025 -->
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory('secondHalf2025')">
+                        <h2>🟡 تنتهي في النصف الثاني من 2025 (يوليو - ديسمبر)</h2>
+                        <span class="count" id="secondHalf2025Count">0</span>
+                    </div>
+                    <div id="secondHalf2025Content" class="category-content" style="display: none;">
+                        <div id="secondHalf2025List" class="cards-grid"></div>
+                    </div>
+                </div>
+
+                <!-- تنتهي في 2026 -->
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory('year2026')">
+                        <h2>🟢 تنتهي في 2026 (سنة كاملة أو أكثر متبقية)</h2>
+                        <span class="count" id="year2026Count">0</span>
+                    </div>
+                    <div id="year2026Content" class="category-content" style="display: none;">
+                        <div id="year2026List" class="cards-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- محتوى التبويب: الجامعات -->
+            <div id="universities" class="tab-content">
+                <h2 style="color: var(--primary-color); margin-bottom: 20px;">🏛️ الجامعات (مرتبة حسب عدد العقود)</h2>
+                
+                <div class="search-section">
+                    <div class="search-box">
+                        <input type="text" id="universitySearch" placeholder="🔍 ابحث عن جامعة...">
+                        <button onclick="filterUniversities()">بحث</button>
+                    </div>
+                </div>
+
+                <div id="universitiesList">
+                    <!-- سيتم ملؤه بواسطة JavaScript -->
+                </div>
+            </div>
+
+            <!-- محتوى التبويب: الإدارات -->
+            <div id="departments" class="tab-content">
+                <h2 style="color: var(--primary-color); margin-bottom: 20px;">🏢 توزيع العقود على الإدارات المختصة</h2>
+
+                <!-- إدارة برامج العلوم الهندسية وعلوم الحاسب -->
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory('dept1')">
+                        <h2>🔧 إدارة برامج العلوم الهندسية وعلوم الحاسب</h2>
+                        <span class="count" id="dept1Count">0</span>
+                    </div>
+                    <div id="dept1Content" class="category-content" style="display: none;">
+                        <div id="dept1List" class="cards-grid"></div>
+                    </div>
+                </div>
+
+                <!-- إدارة برامج العلوم الصحية -->
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory('dept2')">
+                        <h2>⚕️ إدارة برامج العلوم الصحية</h2>
+                        <span class="count" id="dept2Count">0</span>
+                    </div>
+                    <div id="dept2Content" class="category-content" style="display: none;">
+                        <div id="dept2List" class="cards-grid"></div>
+                    </div>
+                </div>
+
+                <!-- إدارة برامج العلوم الإنسانية والتربوية -->
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory('dept3')">
+                        <h2>📚 إدارة برامج العلوم الإنسانية والتربوية</h2>
+                        <span class="count" id="dept3Count">0</span>
+                    </div>
+                    <div id="dept3Content" class="category-content" style="display: none;">
+                        <div id="dept3List" class="cards-grid"></div>
+                    </div>
+                </div>
+
+                <!-- إدارة برامج العلوم الإسلامية والعربية -->
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory('dept4')">
+                        <h2>📖 إدارة برامج العلوم الإسلامية والعربية</h2>
+                        <span class="count" id="dept4Count">0</span>
+                    </div>
+                    <div id="dept4Content" class="category-content" style="display: none;">
+                        <div id="dept4List" class="cards-grid"></div>
+                    </div>
+                </div>
+
+                <!-- إدارة برامج التخصصات العلمية -->
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory('dept5')">
+                        <h2>🔬 إدارة برامج التخصصات العلمية</h2>
+                        <span class="count" id="dept5Count">0</span>
+                    </div>
+                    <div id="dept5Content" class="category-content" style="display: none;">
+                        <div id="dept5List" class="cards-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- محتوى التبويب: التخصصات -->
+            <div id="specializations" class="tab-content">
+                <h2 style="color: var(--primary-color); margin-bottom: 20px;">🎓 التخصصات الأكاديمية</h2>
+
+                <div class="specialization-grid">
+                    <div class="spec-card engineering" onclick="showSpecializationDetails('engineering')">
+                        <h4>🔧 التخصصات الهندسية وعلوم الحاسب</h4>
+                        <div class="count" id="engineeringCount">0</div>
+                        <p>عقد</p>
+                    </div>
+
+                    <div class="spec-card health" onclick="showSpecializationDetails('health')">
+                        <h4>⚕️ التخصصات الصحية</h4>
+                        <div class="count" id="healthCount">0</div>
+                        <p>عقد</p>
+                    </div>
+
+                    <div class="spec-card humanities" onclick="showSpecializationDetails('humanities')">
+                        <h4>📚 العلوم الإنسانية والتربوية</h4>
+                        <div class="count" id="humanitiesCount">0</div>
+                        <p>عقد</p>
+                    </div>
+
+                    <div class="spec-card islamic" onclick="showSpecializationDetails('islamic')">
+                        <h4>📖 العلوم الإسلامية والعربية</h4>
+                        <div class="count" id="islamicCount">0</div>
+                        <p>عقد</p>
+                    </div>
+
+                    <div class="spec-card scientific" onclick="showSpecializationDetails('scientific')">
+                        <h4>🔬 التخصصات العلمية</h4>
+                        <div class="count" id="scientificCount">0</div>
+                        <p>عقد</p>
+                    </div>
+                </div>
+
+                <div id="specializationDetails" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+
+        <!-- التذييل -->
+        <footer class="footer">
+            <p>© 2025 نظام تحليل العقود الأكاديمية | تم التطوير بواسطة فريق التحليل</p>
+            <p>جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <!-- المودال لعرض تفاصيل العقد -->
+    <div id="contractModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 تفاصيل العقد</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- سيتم ملؤه بواسطة JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
